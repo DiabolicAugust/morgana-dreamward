@@ -8,4 +8,4 @@ services:
       POSTGRES_USER: morgana
       POSTGRES_PASSWORD: windy
     ports:
-      - '5433:5433'
+      - '5433:5432'

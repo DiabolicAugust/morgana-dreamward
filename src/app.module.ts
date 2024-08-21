@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource } from './typeorm-ds';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './person/user/user.module';
+import { AuthorizationModule } from './authorization/authorization.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserModule } from './person/user/user.module';
       synchronize: false,
     }),
     UserModule,
+    AuthorizationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
