@@ -1,0 +1,11 @@
+services:
+  morgana-dreamward:
+    container_name: morgana-dreamward
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: dreams
+      POSTGRES_USER: morgana
+      POSTGRES_PASSWORD: windy
+    ports:
+      - '5433:5433'
