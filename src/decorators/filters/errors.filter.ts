@@ -95,11 +95,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    let message = 'Internal server error'; // Default message
+    let message = 'Internal server error';
 
     console.log(exception);
 
-    // Type assertion for PostgreSQL error object
     if (
       exception &&
       typeof exception === 'object' &&
