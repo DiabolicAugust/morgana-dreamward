@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthorizationService } from './authorization.service';
 import { CreateUserDto } from '../person/user/dto/create-user.dto';
-import { AllExceptionsFilter } from '../filters/errors.filter';
+import { AllExceptionsFilter } from '../decorators/filters/errors.filter';
 import { LoginUserDto } from './dto/login.dto';
 
 @Controller('authorization')

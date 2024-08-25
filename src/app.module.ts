@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { dataSource } from './typeorm-ds';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './person/user/user.module';
 import { AuthorizationModule } from './authorization/authorization.module';
+import { ElasticsearchProviderModule } from './elastic/elastic.module';
+import { MulterModuleProvider } from './services/multer-config.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -18,6 +21,13 @@ import { AuthorizationModule } from './authorization/authorization.module';
       entities: [process.env.ENTITIES],
       synchronize: false,
     }),
+    MulterModuleProvider,
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/api/uploads',
+    }),
+
+    ElasticsearchProviderModule,
     UserModule,
     AuthorizationModule,
   ],
