@@ -97,7 +97,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     let message = 'Internal server error';
 
-    console.log(exception);
+    console.log('Exeption: ' + exception);
 
     if (
       exception &&
@@ -107,6 +107,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     ) {
       const pgException = exception as { routine: string };
       const routine = pgException.routine;
+      console.log(pgException);
       if (this.pgErrorMessages[routine]) {
         message = this.pgErrorMessages[routine];
       }

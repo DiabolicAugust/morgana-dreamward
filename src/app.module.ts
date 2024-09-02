@@ -9,6 +9,7 @@ import { ElasticsearchProviderModule } from './elastic/elastic.module';
 import { MulterModuleProvider } from './services/multer-config.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EmailVerifyModule } from './email-verify/email-verify.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { join } from 'path';
     ElasticsearchProviderModule,
     UserModule,
     AuthorizationModule,
+    EmailVerifyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
