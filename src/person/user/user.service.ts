@@ -20,7 +20,10 @@ export class UserService {
   }
 
   async findOne(id: string) {
-    const user = await this.userRepository.findOneBy({ id: id });
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+      relations: ['emailVerification'],
+    });
     if (!user)
       throw new HttpException(
         Strings.entityWasNotFoundById(Entities.USER, id),

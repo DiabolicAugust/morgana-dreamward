@@ -1,7 +1,16 @@
-import { AfterInsert, AfterRemove, AfterUpdate, Column, Entity } from 'typeorm';
+import {
+  AfterInsert,
+  AfterRemove,
+  AfterUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
 import { Person } from '../../entity/person.class';
 import { Entities } from '../../../data/enums/strings.enum';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { EmailVerification } from '../../../email-verify/entities/email-verify.entity';
 
 @Entity('user')
 export class User extends Person {
@@ -10,6 +19,16 @@ export class User extends Person {
 
   @Column({ nullable: true })
   about: string;
+
+  @OneToOne(
+    () => EmailVerification,
+    (emailVerification) => emailVerification.user,
+    {
+      cascade: true,
+    },
+  )
+  @JoinColumn()
+  emailVerification: EmailVerification;
 
   private static elasticsearchService: ElasticsearchService;
 

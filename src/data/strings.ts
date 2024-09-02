@@ -37,4 +37,7 @@ export const Strings = {
   isAuthor: 'Requestor is an author of the entity',
   loginDataValidation: 'Either username or email must be provided',
   wrongPassword: 'Wrong password',
+  wrongToken: 'Wrong token',
+  successfulVerification: 'Successfuly verified',
+  tokenSent: 'Token was sent',
 };

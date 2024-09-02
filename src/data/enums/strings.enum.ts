@@ -8,4 +8,5 @@ export const enum Fields {
 
 export const enum Entities {
   USER = 'user',
+  EMAILVERIFICATION = 'email_verification',
 }
