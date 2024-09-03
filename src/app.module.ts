@@ -10,6 +10,8 @@ import { MulterModuleProvider } from './services/multer-config.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EmailVerifyModule } from './email-verify/email-verify.module';
+import { DreamsModule } from './dreams/dreams.module';
+import { FandomsModule } from './fandoms/fandoms.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { EmailVerifyModule } from './email-verify/email-verify.module';
     UserModule,
     AuthorizationModule,
     EmailVerifyModule,
+    DreamsModule,
+    FandomsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
