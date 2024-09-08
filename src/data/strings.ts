@@ -30,6 +30,10 @@ export const Strings = {
   entityUpdated: (entity: Entities) =>
     `${entity} has been successfully updated`,
 
+  entityAlreadyApproved: (entity: Entities) => `${entity} is aready approved'`,
+
+  entityApproved: (entity: Entities) => `${entity} was approved'`,
+
   emailAlreadyVerified: 'This email is already verified!',
   emailVerifySuccess: 'Your email was successfully verified!',
   notAllowedApproveFriendship: 'You are not allowed to approve this friendship',
