@@ -26,10 +26,9 @@ import { FandomsModule } from './fandoms/fandoms.module';
     }),
     MulterModuleProvider,
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
-      serveRoot: '/api/uploads',
+      rootPath: join(process.cwd(), process.env.FILES_ROOT),
+      serveRoot: process.env.FILES_API_ROOT,
     }),
-
     ElasticsearchProviderModule,
     UserModule,
     AuthorizationModule,

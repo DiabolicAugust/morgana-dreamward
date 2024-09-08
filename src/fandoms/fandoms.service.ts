@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateFandomDto } from './dto/create-fandom.dto';
-import { UpdateFandomDto } from './dto/update-fandom.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Fandom } from './entities/fandom.entity';
 import { Repository } from 'typeorm';
@@ -9,6 +8,8 @@ import { Payload } from '../authorization/dto/payload.dto';
 import { User } from '../person/user/entities/user.entity';
 import { Entities } from '../data/enums/strings.enum';
 import { Role } from '../data/enums/role.enum';
+import { PaginationGetDto } from './dto/pagination-get.dto';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class FandomsService {
@@ -26,7 +27,11 @@ export class FandomsService {
   ) {
     const user = await this.getUser(userId);
 
-    const fandom = this.fandomRepository.create({ ...dto, author: user });
+    const fandom = this.fandomRepository.create({
+      ...dto,
+      author: user,
+      lastModifiedBy: user,
+    });
 
     if (file) {
       fandom.avatar =
@@ -46,23 +51,93 @@ export class FandomsService {
         HttpStatus.BAD_GATEWAY,
       );
 
-    return fandom;
+    return instanceToPlain(fandom);
   }
 
-  findAll() {
-    return `This action returns all fandoms`;
+  async findAll(dto: PaginationGetDto) {
+    const skip = (dto.page - 1) * dto.amount;
+
+    // const where = userRole === Role.ADMIN ? {} : { isApproved: true };
+
+    const [data, count] = await this.fandomRepository.findAndCount({
+      //TODO(morgana): Enabler after test
+      // where: { isApproved: true },
+      skip: skip,
+      take: dto.amount,
+      relations: ['author', 'lastModifiedBy'],
+    });
+
+    const pagesAmount = Math.ceil(count / dto.amount);
+    const morePages = pagesAmount > dto.page;
+
+    return instanceToPlain({
+      fandoms: data,
+      count: count,
+      page: dto.page,
+      amount: dto.amount,
+      more: morePages,
+      pages: pagesAmount,
+    });
   }
 
   findOne(id: number) {
     return `This action returns a #${id} fandom`;
   }
 
-  update(id: number, updateFandomDto: UpdateFandomDto) {
-    return `This action updates a #${id} fandom`;
+  async update(
+    id: string,
+    dto: CreateFandomDto,
+    userId: string,
+    avatar: Express.Multer.File | undefined,
+  ) {
+    const user = await this.getUser(userId);
+
+    const fandom = await this.getFandom(id);
+
+    if (avatar) {
+      fandom.avatar =
+        process.env.FILES_ROOT + process.env.FILES_FANDOM + avatar.filename;
+    }
+
+    fandom.title = dto.title;
+    fandom.lastModifiedBy = user;
+
+    const updatedFandom = this.fandomRepository.save(fandom);
+
+    return instanceToPlain(updatedFandom);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} fandom`;
+  async approveFandom(id: string, userId: string) {
+    const user = await this.getUser(userId);
+
+    const fandom = await this.getFandom(id);
+
+    if (fandom.isApproved === true)
+      throw new HttpException(
+        Strings.entityAlreadyApproved(Entities.FANDOM),
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+
+    fandom.isApproved = true;
+    fandom.approvedBy = user;
+    fandom.lastModifiedBy = user;
+
+    const updatedFandom = this.fandomRepository.save(fandom);
+
+    return updatedFandom;
+  }
+
+  async remove(id: string) {
+    const fandom = await this.fandomRepository.delete({ id: id });
+    if (fandom.affected < 1)
+      throw new HttpException(
+        Strings.somethingWentWrong,
+        HttpStatus.BAD_REQUEST,
+      );
+
+    return {
+      message: Strings.entityDeleted(Entities.FANDOM),
+    };
   }
 
   private async getUser(userId: string): Promise<User> {
@@ -77,5 +152,21 @@ export class FandomsService {
       );
 
     return user;
+  }
+
+  private async getFandom(fandomId: string): Promise<Fandom> {
+    //Get Fandom
+    const fandom = await this.fandomRepository.findOne({
+      where: { id: fandomId },
+    });
+
+    //Check Fandom existance
+    if (!fandom)
+      throw new HttpException(
+        Strings.entityWasNotFoundById(Entities.FANDOM, fandomId),
+        HttpStatus.BAD_REQUEST,
+      );
+
+    return fandom;
   }
 }
