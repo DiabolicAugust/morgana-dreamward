@@ -10,4 +10,5 @@ export const enum Entities {
   USER = 'user',
   EMAILVERIFICATION = 'email_verification',
   FANDOM = 'fandom',
+  TAG = 'tag',
 }

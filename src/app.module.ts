@@ -12,6 +12,7 @@ import { join } from 'path';
 import { EmailVerifyModule } from './email-verify/email-verify.module';
 import { DreamsModule } from './dreams/dreams.module';
 import { FandomsModule } from './fandoms/fandoms.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { FandomsModule } from './fandoms/fandoms.module';
     EmailVerifyModule,
     DreamsModule,
     FandomsModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

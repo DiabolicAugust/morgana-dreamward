@@ -14,7 +14,6 @@ export class UserModule implements OnModuleInit {
   constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
   onModuleInit() {
-    // Установка ElasticsearchService в классе User
     User.setElasticsearchService(this.elasticsearchService);
   }
 }
