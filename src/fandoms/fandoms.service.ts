@@ -10,6 +10,8 @@ import { Entities } from '../data/enums/strings.enum';
 import { Role } from '../data/enums/role.enum';
 import { PaginationGetDto } from './dto/pagination-get.dto';
 import { instanceToPlain } from 'class-transformer';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class FandomsService {
@@ -34,8 +36,7 @@ export class FandomsService {
     });
 
     if (file) {
-      fandom.avatar =
-        process.env.FILES_ROOT + process.env.FILES_FANDOM + file.filename;
+      fandom.avatar = process.env.FILES_ROOT + file.filename;
     }
 
     if (user.role === Role.ADMIN) {
@@ -95,8 +96,15 @@ export class FandomsService {
     const fandom = await this.getFandom(id);
 
     if (avatar) {
-      fandom.avatar =
-        process.env.FILES_ROOT + process.env.FILES_FANDOM + avatar.filename;
+      if (fandom.avatar) {
+        const oldAvatarPath = path.join(process.cwd(), fandom.avatar);
+        console.log(oldAvatarPath);
+        if (fs.existsSync(oldAvatarPath)) {
+          fs.unlinkSync(oldAvatarPath);
+          console.log('old picture deleted!');
+        }
+      }
+      fandom.avatar = process.env.FILES_ROOT + avatar.filename;
     }
 
     fandom.title = dto.title;

@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateTagDto } from './dto/create-tag.dto';
-import { UpdateTagDto } from './dto/update-tag.dto';
+import { CreateTagDto, SearchTagDto, UpdateTagDto } from './dto/create-tag.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
 import { Repository } from 'typeorm';
@@ -34,25 +33,55 @@ export class TagsService {
     return instanceToPlain(savedTag);
   }
 
-  findAll() {
-    return `This action returns all tags`;
+  async findAll(dto: SearchTagDto): Promise<Tag[]> {
+    const query = this.tagsRepository.createQueryBuilder('tag');
+
+    // Add filter for title if provided
+    if (dto.title) {
+      query.andWhere('tag.title LIKE :title', { title: `%${dto.title}%` });
+    }
+
+    const tags = await query.getMany();
+    return tags;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tag`;
+  async findOne(id: string) {
+    const tag = await this.getTag(id);
+    return tag;
   }
 
-  update(id: number, updateTagDto: UpdateTagDto) {
-    return `This action updates a #${id} tag`;
+  async update(id: string, dto: UpdateTagDto, userId: string) {
+    const user = await this.getUser(userId);
+    const tag = await this.getTag(id);
+
+    tag.title = dto.title;
+    tag.lastModifiedBy = user;
+
+    const updatedTag = await this.tagsRepository.save(tag);
+
+    return instanceToPlain(updatedTag);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tag`;
+  async remove(id: string) {
+    const tag = await this.getTag(id);
+    const deletedTag = await this.tagsRepository.delete(tag.id);
+
+    if (deletedTag.affected < 1)
+      throw new HttpException(
+        Strings.somethingWentWrong,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    return {
+      message: Strings.entityDeleted(Entities.TAG),
+    };
   }
 
   private async getUser(userId: string): Promise<User> {
+    const start = Date.now();
     //Get User
     const user = await this.userRepository.findOne({ where: { id: userId } });
+    const userTime = Date.now();
+    console.log(`user query took ${userTime - start}ms`);
 
     //Check User existance
     if (!user)
@@ -62,5 +91,22 @@ export class TagsService {
       );
 
     return user;
+  }
+
+  private async getTag(tagId: string): Promise<Tag> {
+    //Get Tag
+    const tag = await this.tagsRepository.findOne({
+      where: { id: tagId },
+      relations: ['author'],
+    });
+
+    //Check Tag existance
+    if (!tag)
+      throw new HttpException(
+        Strings.entityWasNotFoundById(Entities.TAG, tagId),
+        HttpStatus.BAD_REQUEST,
+      );
+
+    return tag;
   }
 }

@@ -11,3 +11,6 @@ export class CreateTagDto {
 
 // Using PartialType to create UpdateTagDto
 export class UpdateTagDto extends PartialType(CreateTagDto) {}
+
+// Same here, but for for search
+export class SearchTagDto extends PartialType(CreateTagDto) {}

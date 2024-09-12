@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   ManyToOne,
+  Unique,
 } from 'typeorm';
 import { BaseParent } from '../../services/base/base.class';
 import { User } from '../../person/user/entities/user.entity';
@@ -12,6 +13,7 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Entities } from '../../data/enums/strings.enum';
 
 @Entity()
+@Unique(['title'])
 export class Tag extends BaseParent {
   @Column()
   title: string;

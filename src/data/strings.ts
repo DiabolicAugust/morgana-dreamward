@@ -44,4 +44,5 @@ export const Strings = {
   wrongToken: 'Wrong token',
   successfulVerification: 'Successfuly verified',
   tokenSent: 'Token was sent',
+  youNeedAdminRole: 'You need to be an admin to use this functionality!',
 };

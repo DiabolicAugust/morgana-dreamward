@@ -11,13 +11,14 @@ import {
   ValidationPipe,
   UseFilters,
   Request,
+  Query,
 } from '@nestjs/common';
 import { TagsService } from './tags.service';
-import { CreateTagDto } from './dto/create-tag.dto';
-import { UpdateTagDto } from './dto/update-tag.dto';
+import { CreateTagDto, SearchTagDto, UpdateTagDto } from './dto/create-tag.dto';
 import { GetPayloadGuard } from '../decorators/guards/get-payload.guard';
 import { AllExceptionsFilter } from '../decorators/filters/errors.filter';
 import { Payload } from '../authorization/dto/payload.dto';
+import { CheckAdminRoleGuard } from '../decorators/guards/check-admin-role.guard';
 
 @Controller('tags')
 export class TagsController {
@@ -33,22 +34,33 @@ export class TagsController {
   }
 
   @Get()
-  findAll() {
-    return this.tagsService.findAll();
+  @UseFilters(AllExceptionsFilter)
+  findAll(@Query() dto: SearchTagDto) {
+    return this.tagsService.findAll(dto);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.tagsService.findOne(+id);
+    return this.tagsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTagDto: UpdateTagDto) {
-    return this.tagsService.update(+id, updateTagDto);
+  @UseGuards(CheckAdminRoleGuard)
+  @UsePipes(ValidationPipe)
+  @UseFilters(AllExceptionsFilter)
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateTagDto,
+    @Request() req: Request,
+  ) {
+    const user: Payload = req['user'];
+    return this.tagsService.update(id, dto, user.id);
   }
 
   @Delete(':id')
+  @UseGuards(CheckAdminRoleGuard)
+  @UseFilters(AllExceptionsFilter)
   remove(@Param('id') id: string) {
-    return this.tagsService.remove(+id);
+    return this.tagsService.remove(id);
   }
 }
