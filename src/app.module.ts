@@ -10,6 +10,9 @@ import { MulterModuleProvider } from './services/multer-config.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EmailVerifyModule } from './email-verify/email-verify.module';
+import { DreamsModule } from './dreams/dreams.module';
+import { FandomsModule } from './fandoms/fandoms.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -24,14 +27,16 @@ import { EmailVerifyModule } from './email-verify/email-verify.module';
     }),
     MulterModuleProvider,
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'uploads'),
-      serveRoot: '/api/uploads',
+      rootPath: join(process.cwd(), process.env.FILES_ROOT),
+      serveRoot: process.env.FILES_API_ROOT,
     }),
-
     ElasticsearchProviderModule,
     UserModule,
     AuthorizationModule,
     EmailVerifyModule,
+    DreamsModule,
+    FandomsModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

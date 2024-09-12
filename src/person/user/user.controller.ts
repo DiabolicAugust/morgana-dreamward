@@ -31,12 +31,13 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id')
+  @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('/:id/')
+  @Patch('/:id')
   @UseGuards(UserUpdateGuard)
   @UsePipes(ValidationPipe)
   @UseInterceptors(FilesInterceptor('avatar', 1))
@@ -55,7 +56,7 @@ export class UserController {
     return this.userService.update(id, updateUserDto, avatar);
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
