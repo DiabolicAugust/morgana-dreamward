@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { FandomsService } from './fandoms.service';
 import { FandomsController } from './fandoms.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import { Fandom } from './entities/fandom.entity';
 import { User } from '../person/user/entities/user.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 @Module({
   controllers: [FandomsController],
@@ -18,4 +19,10 @@ import { join } from 'path';
     }),
   ],
 })
-export class FandomsModule {}
+export class FandomsModule implements OnModuleInit {
+  constructor(private readonly elasticsearchService: ElasticsearchService) {}
+
+  onModuleInit() {
+    Fandom.setElasticsearchService(this.elasticsearchService);
+  }
+}

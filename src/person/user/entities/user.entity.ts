@@ -5,12 +5,14 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   OneToOne,
 } from 'typeorm';
 import { Person } from '../../entity/person.class';
 import { Entities } from '../../../data/enums/strings.enum';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { EmailVerification } from '../../../email-verify/entities/email-verify.entity';
+import { Dream } from '../../../dreams/entities/dream.entity';
 
 @Entity('user')
 export class User extends Person {
@@ -29,6 +31,9 @@ export class User extends Person {
   )
   @JoinColumn()
   emailVerification: EmailVerification;
+
+  @ManyToMany(() => Dream, (dream) => dream.author, { cascade: true })
+  dreams: Dream[];
 
   private static elasticsearchService: ElasticsearchService;
 

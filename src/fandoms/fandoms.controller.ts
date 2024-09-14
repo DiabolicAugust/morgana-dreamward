@@ -70,6 +70,7 @@ export class FandomsController {
 
   @Patch(':id')
   @UseGuards(CheckAdminRoleGuard)
+  @UseFilters(AllExceptionsFilter)
   @UsePipes(ValidationPipe)
   @UseInterceptors(FilesInterceptor('avatar', 1), FileCleanupInterceptor)
   update(

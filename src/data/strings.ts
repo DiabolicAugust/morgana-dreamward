@@ -5,6 +5,15 @@ export const Strings = {
   fieldMustBeString: (field: Fields) => `${field} must be string!`,
   fieldMustBeEmail: (field: Fields) =>
     `${field} must be in a correct email format!`,
+  fieldMustBeArray: (field: Fields) => `${field} must be an array!`,
+  fieldAllElementsMustBeString: (field: Fields) =>
+    `All elements in ${field} must be string!`,
+  fieldAllElementsCantBeEmpty: (field: Fields) =>
+    `None of ${field} elements can't be empty!`,
+  fieldMustBeOneOfEnum: (field: Fields, enumObject: object) =>
+    `${field} must be one of the following: ${Object.values(enumObject).join(', ')}`,
+  fieldMustBeOneOfArray: (field: Fields, array: []) =>
+    `${field} must be one of the following: ${array.join(', ')}`,
 
   fieldTooShort: (field: string, min: number) =>
     `${field} must be at least ${min} characters long.`,
@@ -44,4 +53,10 @@ export const Strings = {
   wrongToken: 'Wrong token',
   successfulVerification: 'Successfuly verified',
   tokenSent: 'Token was sent',
+  youNeedAdminRole: 'You need to be an admin to use this functionality!',
+  entityNotFound: 'Entity not found',
+};
+
+export const Consts = {
+  GET_SERVICE: 'GetService',
 };

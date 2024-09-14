@@ -1,6 +1,8 @@
 import {
   CanActivate,
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Payload } from '../../authorization/dto/payload.dto';
 import { Role } from '../../data/enums/role.enum';
+import { Strings } from '../../data/strings';
 
 @Injectable()
 export class CheckAdminRoleGuard implements CanActivate {
@@ -19,20 +22,19 @@ export class CheckAdminRoleGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException('Token not found');
     }
-    try {
-      const payload: Payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
-      });
+    const payload: Payload = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
 
-      console.log(payload);
+    console.log(payload);
 
-      if (payload.role != Role.ADMIN) throw new UnauthorizedException();
+    if (payload.role != Role.ADMIN)
+      throw new HttpException(
+        Strings.youNeedAdminRole,
+        HttpStatus.UNAUTHORIZED,
+      );
 
-      request['user'] = payload;
-    } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException('Invalid token or user ID');
-    }
+    request['user'] = payload;
     return true;
   }
 

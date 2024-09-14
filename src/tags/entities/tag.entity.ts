@@ -14,12 +14,9 @@ import { Entities } from '../../data/enums/strings.enum';
 
 @Entity()
 @Unique(['title'])
-export class Fandom extends BaseParent {
+export class Tag extends BaseParent {
   @Column()
   title: string;
-
-  @Column({ nullable: true })
-  avatar: string;
 
   @ManyToOne(() => User)
   author: User;
@@ -30,23 +27,23 @@ export class Fandom extends BaseParent {
   @Column({ default: false })
   isApproved: Boolean;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User)
   approvedBy: User;
 
   private static elasticsearchService: ElasticsearchService;
 
   static setElasticsearchService(service: ElasticsearchService) {
-    Fandom.elasticsearchService = service;
+    Tag.elasticsearchService = service;
   }
 
   @AfterInsert()
   @AfterUpdate()
   async syncWithElasticsearch() {
-    const fandomPlain = this;
-    const result = await Fandom.elasticsearchService.index({
-      index: Entities.FANDOM,
+    const tagPlain = this;
+    const result = await Tag.elasticsearchService.index({
+      index: Entities.TAG,
       id: this.id.toString(),
-      body: fandomPlain,
+      body: tagPlain,
     });
     console.log(result);
     if (result.result === 'created' || result.result === 'updated')
@@ -55,8 +52,8 @@ export class Fandom extends BaseParent {
 
   @AfterRemove()
   async removeFromElasticsearch() {
-    await Fandom.elasticsearchService.delete({
-      index: Entities.FANDOM,
+    await Tag.elasticsearchService.delete({
+      index: Entities.TAG,
       id: this.id.toString(),
     });
   }

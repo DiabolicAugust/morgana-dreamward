@@ -10,6 +10,9 @@ import { Entities } from '../data/enums/strings.enum';
 import { Role } from '../data/enums/role.enum';
 import { PaginationGetDto } from './dto/pagination-get.dto';
 import { instanceToPlain } from 'class-transformer';
+import * as fs from 'fs';
+import * as path from 'path';
+import { PaginationType } from '../data/pagination.type';
 
 @Injectable()
 export class FandomsService {
@@ -34,8 +37,7 @@ export class FandomsService {
     });
 
     if (file) {
-      fandom.avatar =
-        process.env.FILES_ROOT + process.env.FILES_FANDOM + file.filename;
+      fandom.avatar = process.env.FILES_ROOT + file.filename;
     }
 
     if (user.role === Role.ADMIN) {
@@ -70,14 +72,16 @@ export class FandomsService {
     const pagesAmount = Math.ceil(count / dto.amount);
     const morePages = pagesAmount > dto.page;
 
-    return instanceToPlain({
-      fandoms: data,
+    const result: PaginationType<Fandom> = {
+      data: data,
       count: count,
       page: dto.page,
       amount: dto.amount,
       more: morePages,
       pages: pagesAmount,
-    });
+    };
+
+    return instanceToPlain(result);
   }
 
   findOne(id: number) {
@@ -95,8 +99,15 @@ export class FandomsService {
     const fandom = await this.getFandom(id);
 
     if (avatar) {
-      fandom.avatar =
-        process.env.FILES_ROOT + process.env.FILES_FANDOM + avatar.filename;
+      if (fandom.avatar) {
+        const oldAvatarPath = path.join(process.cwd(), fandom.avatar);
+        console.log(oldAvatarPath);
+        if (fs.existsSync(oldAvatarPath)) {
+          fs.unlinkSync(oldAvatarPath);
+          console.log('old picture deleted!');
+        }
+      }
+      fandom.avatar = process.env.FILES_ROOT + avatar.filename;
     }
 
     fandom.title = dto.title;
@@ -124,7 +135,7 @@ export class FandomsService {
 
     const updatedFandom = this.fandomRepository.save(fandom);
 
-    return updatedFandom;
+    return instanceToPlain(updatedFandom);
   }
 
   async remove(id: string) {
