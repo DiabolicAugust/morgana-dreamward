@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ParentServiceClass } from '../../data/service-parent.class';
 import { Payload } from '../../authorization/dto/payload.dto';
-import { Strings } from '../../data/strings';
+import { Consts, Strings } from '../../data/strings';
 import { Dream } from '../../dreams/entities/dream.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../person/user/entities/user.entity';
@@ -18,7 +18,7 @@ import { Fields } from '../../data/enums/strings.enum';
 @Injectable()
 export class IsAuthorGuard<T> implements CanActivate {
   constructor(
-    @Inject('GetService') private readonly service: ParentServiceClass<T>,
+    @Inject(Consts.GET_SERVICE) private readonly service: ParentServiceClass<T>,
     private readonly userService: UserService,
   ) {}
 

@@ -8,13 +8,14 @@ import { User } from '../person/user/entities/user.entity';
 import { Tag } from '../tags/entities/tag.entity';
 import { Fandom } from '../fandoms/entities/fandom.entity';
 import { UserService } from '../person/user/user.service';
+import { Consts } from '../data/strings';
 
 @Module({
   controllers: [DreamsController],
   providers: [
     DreamsService,
     {
-      provide: 'GetService',
+      provide: Consts.GET_SERVICE,
       useClass: DreamsService,
     },
     UserService,

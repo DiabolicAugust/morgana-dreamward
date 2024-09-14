@@ -56,3 +56,7 @@ export const Strings = {
   youNeedAdminRole: 'You need to be an admin to use this functionality!',
   entityNotFound: 'Entity not found',
 };
+
+export const Consts = {
+  GET_SERVICE: 'GetService',
+};
