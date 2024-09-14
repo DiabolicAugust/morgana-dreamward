@@ -12,6 +12,7 @@ import { PaginationGetDto } from './dto/pagination-get.dto';
 import { instanceToPlain } from 'class-transformer';
 import * as fs from 'fs';
 import * as path from 'path';
+import { PaginationType } from '../data/pagination.type';
 
 @Injectable()
 export class FandomsService {
@@ -71,14 +72,16 @@ export class FandomsService {
     const pagesAmount = Math.ceil(count / dto.amount);
     const morePages = pagesAmount > dto.page;
 
-    return instanceToPlain({
-      fandoms: data,
+    const result: PaginationType<Fandom> = {
+      data: data,
       count: count,
       page: dto.page,
       amount: dto.amount,
       more: morePages,
       pages: pagesAmount,
-    });
+    };
+
+    return instanceToPlain(result);
   }
 
   findOne(id: number) {
@@ -132,7 +135,7 @@ export class FandomsService {
 
     const updatedFandom = this.fandomRepository.save(fandom);
 
-    return updatedFandom;
+    return instanceToPlain(updatedFandom);
   }
 
   async remove(id: string) {
