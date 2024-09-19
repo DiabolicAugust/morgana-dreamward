@@ -13,6 +13,11 @@ export const enum Fields {
   TAGS = 'tags',
   SECOND_AUTHOR = 'secondAuthor',
   USER = 'user',
+  TEXT = 'text',
+  RELATED_DREAM = 'relatedDream',
+  EPIGRAPH = 'epigraph',
+  CONTENT_NUMBER = 'contentNumber',
+  ORDER = 'order',
 }
 
 export const enum Entities {
@@ -21,4 +26,5 @@ export const enum Entities {
   FANDOM = 'fandom',
   TAG = 'tag',
   DREAM = 'dream',
+  FRAGMENT = 'fragment',
 }
