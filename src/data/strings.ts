@@ -5,6 +5,7 @@ export const Strings = {
   fieldMustBeString: (field: Fields) => `${field} must be string!`,
   fieldMustBeEmail: (field: Fields) =>
     `${field} must be in a correct email format!`,
+  fieldMustBeInt: (field: Fields) => `${field} must be an int!`,
   fieldMustBeArray: (field: Fields) => `${field} must be an array!`,
   fieldAllElementsMustBeString: (field: Fields) =>
     `All elements in ${field} must be string!`,

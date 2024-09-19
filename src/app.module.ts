@@ -13,6 +13,7 @@ import { EmailVerifyModule } from './email-verify/email-verify.module';
 import { DreamsModule } from './dreams/dreams.module';
 import { FandomsModule } from './fandoms/fandoms.module';
 import { TagsModule } from './tags/tags.module';
+import { FragmentsModule } from './fragments/fragments.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { TagsModule } from './tags/tags.module';
     DreamsModule,
     FandomsModule,
     TagsModule,
+    FragmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
